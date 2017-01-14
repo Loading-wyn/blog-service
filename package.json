@@ -6,7 +6,7 @@
   "version": "0.1.0",
   "main": "server.js",
   "scripts": {
-    "lint": "eslint server/**",
+    "lint": "eslint server/**/*.js",
     "build:server": "babel server --out-dir build --source-maps",
     "build": "if [ -d build ]; then rm -r build; fi; npm run build:server",
     "test:nobuild": "mocha build/**/*.spec.js",
