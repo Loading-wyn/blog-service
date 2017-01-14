@@ -1,0 +1,12 @@
+{
+  "presets": [
+    "react"
+  ],
+  "plugins": [
+    "syntax-trailing-function-commas",
+    "transform-object-rest-spread",
+    "transform-es2015-modules-commonjs",
+    "transform-class-properties",
+    "transform-decorators-legacy"
+  ]
+}

@@ -1,0 +1,32 @@
+version: '2'
+services:
+  floducer-service:
+    build:
+      context: ../
+      dockerfile: Dockerfile-dev
+    image: 'floducer-service:latest'
+    ports:
+      - '8032:80'
+    restart: ${AUTO_RESTART}
+    command: ${CUSTOM_CMD}
+    links:
+      - floducer-redis:redis
+      - floducer-mongo:mongo
+    depends_on:
+      - floducer-redis
+      - floducer-mongo
+    environment:
+      - NODE_ENV=development
+      - PORT=80
+    volumes:
+      - ../env.config:/ebsa/service/env.config
+      - ../package.json:/ebsa/service/package.json
+      # - ../yarn.lock:/ebsa/service/yarn.lock
+      - ../server:/ebsa/service/server
+      - ../configs:/ebsa/service/configs
+  floducer-redis:
+    image: 'redis:latest'
+    restart: always
+  floducer-mongo:
+    image: 'mongo:3.2'
+    restart: always

@@ -1,0 +1,36 @@
+{
+  "loaded": false,
+  "saved": false,
+  "feedTitle": "测试",
+  "annotation": "",
+  "projectName": "test0",
+  "sectionID": "test0",
+  "magazineSectionID": "",
+  "items": [{
+    "id": "test1",
+    "slideId": 1,
+    "theme": "interview",
+    "template": "cover",
+    "title": "红沙发专访",
+    "subtitle": "RedCouch Interview",
+    "flag": "Vol.1",
+    "desc": "对话有趣有料的Flipboard超级粉丝，一起分享所爱。",
+    "keywordsTitle": "本期人物：毛丹青",
+    "keywords": "作家,日本,村上春树,猫",
+    "bgImage": "http://s.flipchina.cn/assets/upload/slides/redcouch-maodanqing/bg-cover.jpg",
+    "fgImage": "http://s.flipchina.cn/assets/upload/slides/redcouch-maodanqing/fg-cover.png"
+  }, {
+    "id": "test2",
+    "slideId": 2,
+    "theme": "interview",
+    "template": "cover",
+    "title": "红沙发专访",
+    "subtitle": "RedCouch Interview",
+    "flag": "Vol.1",
+    "desc": "对话有趣有料的Flipboard超级粉丝，一起分享所爱。",
+    "keywordsTitle": "本期人物：毛丹青",
+    "keywords": "作家,日本,村上春树,猫",
+    "bgImage": "http://s.flipchina.cn/assets/upload/slides/redcouch-maodanqing/bg-cover.jpg",
+    "fgImage": "http://s.flipchina.cn/assets/upload/slides/redcouch-maodanqing/fg-cover.png"
+  }]
+}
