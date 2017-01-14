@@ -12,8 +12,8 @@
     "test:nobuild": "mocha build/**/*.spec.js",
     "test": "npm run build && npm run test:nobuild",
     "start": "npm run build && node server.js",
-    "dev": "AUTO_RESTART=no CUSTOM_CMD=\"npm run start\" docker-compose -f configs/docker-compose-dev.yml up",
-    "dev:test": "AUTO_RESTART=no CUSTOM_CMD=\"npm run test\" docker-compose -f configs/docker-compose-dev.yml up",
+    "dev": "set AUTO_RESTART=no CUSTOM_CMD=npm run start&& docker-compose -f configs/docker-compose-dev.yml up",
+    "dev:test": "set AUTO_RESTART=no && set CUSTOM_CMD=npm run test&& docker-compose -f configs/docker-compose-dev.yml up",
     "dev:rebuild": "docker rmi floducer-service ; npm run dev:test",
     "dev:reset": "docker rm -f configs_floducer-service_1 configs_floducer-redis_1"
   },

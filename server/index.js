@@ -51,11 +51,7 @@ app.use(helmet.noCache());
 
 const corsConfig = {
   whitelist: [
-    'https://sapp.flipchina.cn',
-    'http://sapp.flipchina.cn',
-    'https://sapp.staging.flipchina.cn',
-    'http://sapp.staging.flipchina.cn',
-    'http://localhost:8002',
+    'http://localhost',
   ],
 };
 app.use(corsManager(corsConfig));
