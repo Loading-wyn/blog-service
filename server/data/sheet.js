@@ -10,7 +10,7 @@ export default () => {
     email: 'publisher@company.com',
     appUsername: 'appuser4test',
     // appPassword: 'fdafdsfa',
-    magName: `My Magazine ${Date.now()}`,
+    magName: `My Article ${Date.now()}`,
     magDesc: 'some desc for mag',
     rssSource: 'http://www.mydomain.com/feed',
     wechatSource: '',
