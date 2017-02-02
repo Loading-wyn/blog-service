@@ -5,12 +5,10 @@ import {
 } from '../../lib/validators';
 
 const Schema = mongoose.Schema;
-const ObjectId = Schema.Types.ObjectId;
 
 const ArticleSchema = new Schema({
-  article: {
+  title: {
     type: String,
-    unique: true,
     required: true,
   },
   summary: {
@@ -25,8 +23,12 @@ const ArticleSchema = new Schema({
   comments: {
     type: [{
       author: {
-        type: ObjectId,
-        ref: 'BlogUser',
+        type: String,
+        required: true,
+      },
+      createdAt: {
+        type: Date,
+        'default': new Date(0),
       },
       content: {
         type: String,
@@ -34,6 +36,7 @@ const ArticleSchema = new Schema({
       },
     }],
     'default': [],
+    index: true,
   },
   keywords: {
     type: [{
@@ -46,6 +49,7 @@ const ArticleSchema = new Schema({
       },
     }],
     'default': [],
+    index: true,
   },
 }, {
   autoIndex: true,
@@ -57,10 +61,6 @@ const ArticleSchema = new Schema({
   toJSON: {
     versionKey: false,
     getters: true,
-    transform: (doc, json) => {
-      delete json._id;
-      delete json.id;
-    },
   },
 });
 
