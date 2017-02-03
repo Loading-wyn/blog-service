@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import User from '../../../model/BlogUser';
+import Article from '../../../model/Article';
 import errorResponse from '../../../lib/errorResponse';
 
 const api = Router();
@@ -43,51 +44,14 @@ api.post('/users/:username/actions/delete', (req, res) => {
   }).catch(errorResponse(req, res));
 });
 
-api.post('/users/:username/actions/refuse', (req, res) => {
-  const {
-    username,
-  } = req.params;
-  const {
-    reason,
-  } = req.body;
-  const objectId = (/^id:(.+)/.exec(username) || [])[1];
-  User.findOneAndUpdate(objectId ? {
-    id: username,
-  } : {
-    username,
-  }, {
-    sheetApprovedAt: new Date(0),
-    sheetRefusedAt: Date.now(),
-    sheetRefusedReason: reason,
-  }, {
-    'new': true,
-  }).exec().then(user => {
-    const {
-      sheetApprovedAt,
-      sheetRefusedAt,
-      sheetRefusedReason,
-    } = user;
-    res.json({
-      status: 0,
-      username,
-      sheetApprovedAt,
-      sheetRefusedAt,
-      sheetRefusedReason,
-    });
-  }).catch(errorResponse(req, res));
-});
-
 api.post('/users/:username/actions/edit', (req, res) => {
   const {
     username,
   } = req.params;
   const {
     group,
-  } = req.query;
-  const objectId = (/^id:(.+)/.exec(username) || [])[1];
-  User.findOneAndUpdate(objectId ? {
-    id: username,
-  } : {
+  } = req.body;
+  User.findOneAndUpdate({
     username,
   }, {
     group,
@@ -99,6 +63,71 @@ api.post('/users/:username/actions/edit', (req, res) => {
       status: 0,
       username,
       group,
+    });
+  }).catch(errorResponse(req, res));
+});
+
+api.post('/articles/actions/publish', (req, res) => {
+  const {
+    title,
+    summary,
+    content,
+    keywords,
+  } = req.body;
+  new Article({
+    title,
+    summary,
+    content,
+    keywords,
+  }).save().then((article) => {
+    res.json({
+      status: 0,
+      id: article.id,
+    }).catch(errorResponse(req, res));
+  });
+});
+
+api.post('/articles/:articleId/actions/delete', (req, res) => {
+  const {
+    articleId,
+  } = req.params;
+  Article.findOneAndRemove({
+    id: articleId,
+  }).exec().then(article => {
+    const {
+      id,
+    } = article;
+    res.json({
+      status: 0,
+      id,
+    });
+  }).catch(errorResponse(req, res));
+});
+
+api.post('/articles/:articleId/actions/edit', (req, res) => {
+  const {
+    articleId,
+  } = req.params;
+  const {
+    title,
+    content,
+    summary,
+    keywords,
+  } = req.body;
+  Article.findOneAndUpdate({
+    id: articleId,
+  }, {
+    title,
+    content,
+    summary,
+    keywords,
+  }).exec().then(article => {
+    const {
+      id,
+    } = article;
+    res.json({
+      status: 0,
+      id,
     });
   }).catch(errorResponse(req, res));
 });
