@@ -1,10 +1,8 @@
 import { Router } from 'express';
-import floducerAPI from './floducer';
-import homefeaturedAPI from './homefeatured';
+import blogAPI from './blog';
 
 const api = Router();
 
-api.use('/floducer', floducerAPI);
-api.use('/homefeatured', homefeaturedAPI);
+api.use('/blog', blogAPI);
 
 export default api;

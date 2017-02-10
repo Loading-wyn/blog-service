@@ -24,14 +24,11 @@ api.get('/users', (req, res) => {
     }).catch(errorResponse(req, res));
 });
 
-api.post('/users/:username/actions/delete', (req, res) => {
+api.get('/users/:username/actions/delete', (req, res) => {
   const {
     username,
   } = req.params;
-  const objectId = (/^id:(.+)/.exec(username) || [])[1];
-  User.findOneAndRemove(objectId ? {
-    id: username,
-  } : {
+  User.findOneAndRemove({
     username,
   }).exec().then(user => {
     const {
@@ -44,28 +41,28 @@ api.post('/users/:username/actions/delete', (req, res) => {
   }).catch(errorResponse(req, res));
 });
 
-api.post('/users/:username/actions/edit', (req, res) => {
-  const {
-    username,
-  } = req.params;
-  const {
-    group,
-  } = req.body;
-  User.findOneAndUpdate({
-    username,
-  }, {
-    group,
-  }).exec().then(user => {
-    const {
-      group,
-    } = user;
-    res.json({
-      status: 0,
-      username,
-      group,
-    });
-  }).catch(errorResponse(req, res));
-});
+// api.post('/users/:username/actions/edit', (req, res) => {
+//   const {
+//     username,
+//   } = req.params;
+//   const {
+//     group,
+//   } = req.body;
+//   User.findOneAndUpdate({
+//     username,
+//   }, {
+//     group,
+//   }).exec().then(user => {
+//     const {
+//       group,
+//     } = user;
+//     res.json({
+//       status: 0,
+//       username,
+//       group,
+//     });
+//   }).catch(errorResponse(req, res));
+// });
 
 api.post('/articles/actions/publish', (req, res) => {
   const {
