@@ -18,7 +18,7 @@ api.use(pushUpdate);
 api.use(authorized);
 api.use(unauthorized);
 api.use(authAPI);
-api.use('/articles', needAdmin, articleAPI);
+api.use('/articles', articleAPI);
 api.use('/supervisor', needAdmin, supervisorAPI);
 
 export default api;

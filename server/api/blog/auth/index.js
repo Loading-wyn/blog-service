@@ -25,6 +25,7 @@ export const authorized = jwtMiddleware({
   path: [
     '/api/blog/signup',
     '/api/blog/signin',
+    { url: /^\/api\/blog\/articles\/.+/, methods: ['GET'] },
   ],
 });
 

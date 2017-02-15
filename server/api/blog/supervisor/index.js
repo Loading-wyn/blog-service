@@ -77,9 +77,14 @@ api.post('/articles/actions/publish', (req, res) => {
     content,
     keywords,
   }).save().then((article) => {
+    const {
+      id,
+      title,
+    } = article;
     res.json({
       status: 0,
-      id: article.id,
+      title,
+      id,
     }).catch(errorResponse(req, res));
   });
 });
@@ -88,15 +93,21 @@ api.post('/articles/:articleId/actions/delete', (req, res) => {
   const {
     articleId,
   } = req.params;
-  Article.findOneAndRemove({
-    id: articleId,
-  }).exec().then(article => {
+  Article.findByIdAndRemove(
+    articleId,
+  ).exec().then(article => {
     const {
-      id,
+      title,
+      content,
+      summary,
+      keywords,
     } = article;
     res.json({
       status: 0,
-      id,
+      title,
+      content,
+      summary,
+      keywords,
     });
   }).catch(errorResponse(req, res));
 });
@@ -111,20 +122,38 @@ api.post('/articles/:articleId/actions/edit', (req, res) => {
     summary,
     keywords,
   } = req.body;
-  Article.findOneAndUpdate({
-    id: articleId,
-  }, {
-    title,
-    content,
-    summary,
-    keywords,
+  const newArticle = {};
+  if (title) {
+    newArticle.title = title;
+  }
+  if (content) {
+    newArticle.content = content;
+  }
+  if (summary) {
+    newArticle.summary = summary;
+  }
+  if (keywords) {
+    newArticle.keywords = keywords;
+  }
+  Article.findByIdAndUpdate(articleId, newArticle, {
+    'new': true,
   }).exec().then(article => {
     const {
-      id,
+      title,
+      content,
+      summary,
+      keywords,
+      createdAt,
+      updatedAt,
     } = article;
     res.json({
       status: 0,
-      id,
+      title,
+      content,
+      summary,
+      keywords,
+      createdAt,
+      updatedAt,
     });
   }).catch(errorResponse(req, res));
 });

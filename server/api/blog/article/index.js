@@ -33,9 +33,9 @@ api.get('/:articleId', (req, res) => {
   const {
     articleId,
   } = req.params;
-  Article.findOne({
-    id: articleId,
-  }).exec().then(article => {
+  Article.findById(articleId)
+  .exec()
+  .then(article => {
     delete article.comments;
     res.json({
       status: 0,
@@ -48,9 +48,7 @@ api.get('/:articleId/comments', (req, res) => {
   const {
     articleId,
   } = req.params;
-  Article.findOne({
-    id: articleId,
-  }, {
+  Article.findById(articleId, {
     comments: 1,
   }).exec().then(article => {
     res.json({
@@ -60,29 +58,29 @@ api.get('/:articleId/comments', (req, res) => {
   }).catch(errorResponse(req, res));
 });
 
-api.post('/:articleId/comments/action/pulish', (req, res) => {
+api.post('/:articleId/comments/action/publish', (req, res) => {
   const {
     articleId,
   } = req.params;
   const {
-    username,
+    user,
   } = req;
   const {
     content,
   } = req.body;
-  Article.findOneAndUpdate({
-    id: articleId,
-  }, {
+  Article.findByIdAndUpdate(articleId, {
     $push: {
       comments: {
-        author: username,
+        author: user.username,
         content,
       },
     },
-  }).exec().then(() => {
+  }, {
+    'new': true,
+  }).exec().then(article => {
     res.json({
       status: 0,
-      content,
+      comments: article.comments,
     });
   }).catch(errorResponse(req, res));
 });
@@ -93,7 +91,7 @@ api.get('/:articleId/comment/:commentId', (req, res) => {
     commentId,
   } = req.params;
   User.findOne({
-    id: articleId,
+    _id: articleId,
     'comments.id': commentId,
   }, {
     'comments.$': 1,
@@ -111,21 +109,33 @@ api.post('/:articleId/comments/:commentId/action/update', (req, res) => {
     articleId,
   } = req.params;
   const {
-    username,
+    user,
+    body,
   } = req;
-  User.findOneAndUpdate({
-    id: articleId,
-    'comments.id': commentId,
-    'comments.author': username,
-  }, {
-    'comments.$': 1,
-  }).exec().then(article => {
-    const comment = article.comments[0];
-    res.json({
-      status: 0,
-      comment,
-    });
-  }).catch(errorResponse(req, res));
+  const {
+    username,
+    group,
+  } = user;
+  const {
+    username: target,
+  } = body;
+  if (group === 'superadmin' || target === username) {
+    User.findOneAndUpdate({
+      _id: articleId,
+      'comments._id': commentId,
+      'comments.author': username,
+    }, {
+      'comments.$': 1,
+    }).exec().then(article => {
+      const comment = article.comments[0];
+      res.json({
+        status: 0,
+        comment,
+      });
+    }).catch(errorResponse(req, res));
+  } else {
+    res.status(403).send('permission denied');
+  }
 });
 
 export default api;
