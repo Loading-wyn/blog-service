@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import User from '../../../model/BlogUser';
 import Article from '../../../model/Article';
 import errorResponse from '../../../lib/errorResponse';
 
@@ -77,23 +76,28 @@ api.post('/:articleId/comments/action/publish', (req, res) => {
     },
   }, {
     'new': true,
+    fields: 'comments',
   }).exec().then(article => {
+    const {
+      comments,
+    } = article;
     res.json({
       status: 0,
-      comments: article.comments,
+      comment: comments[comments.length - 1],
     });
   }).catch(errorResponse(req, res));
 });
 
-api.get('/:articleId/comment/:commentId', (req, res) => {
+api.get('/:articleId/comments/:commentId', (req, res) => {
   const {
     articleId,
     commentId,
   } = req.params;
-  User.findOne({
+  Article.findOne({
     _id: articleId,
-    'comments.id': commentId,
+    'comments._id': commentId,
   }, {
+    'new': true,
     'comments.$': 1,
   }).exec().then(article => {
     res.json({
@@ -117,25 +121,69 @@ api.post('/:articleId/comments/:commentId/action/update', (req, res) => {
     group,
   } = user;
   const {
-    username: target,
+    content,
   } = body;
-  if (group === 'superadmin' || target === username) {
-    User.findOneAndUpdate({
-      _id: articleId,
-      'comments._id': commentId,
-      'comments.author': username,
-    }, {
-      'comments.$': 1,
-    }).exec().then(article => {
-      const comment = article.comments[0];
-      res.json({
-        status: 0,
-        comment,
-      });
-    }).catch(errorResponse(req, res));
-  } else {
-    res.status(403).send('permission denied');
+  const query = {
+    _id: articleId,
+    'comments._id': commentId,
+  };
+  if (group !== 'superadmin') {
+    query['comments.author'] = username;
   }
+  Article.findOneAndUpdate(query, {
+    'comments.$.content': content,
+  }, {
+    fields: { 'comments.$': 1 },
+  }).exec().then(article => {
+    if (!article) {
+      const errData = JSON.stringify({
+        status: -10,
+      });
+      throw new Error(`[[${errData}]] NO SUCH ARTICLE`);
+    }
+    const comment = article.comments[0];
+    res.json({
+      status: 0,
+      comment,
+    });
+  }).catch(errorResponse(req, res));
 });
 
+api.post('/:articleId/comments/:commentId/action/delete', (req, res) => {
+  const {
+    commentId,
+    articleId,
+  } = req.params;
+  const {
+    user,
+  } = req;
+  const {
+    username,
+    group,
+  } = user;
+  const update = {
+    $pull: { comments: { _id: commentId } },
+  };
+  if (group !== 'superadmin') {
+    update['$pull'].comments.author = username;
+  }
+  Article.findOneAndUpdate({
+    _id: articleId,
+    'comments._id': commentId,
+  }, update, {
+    fields: { 'comments.$': 1 },
+  }).exec().then(article => {
+    if (!article) {
+      const errData = JSON.stringify({
+        status: -10,
+      });
+      throw new Error(`[[${errData}]] NO SUCH ARTICLE`);
+    }
+    const comment = article.comments[0];
+    res.json({
+      status: 0,
+      comment,
+    });
+  }).catch(errorResponse(req, res));
+});
 export default api;
