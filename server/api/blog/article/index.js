@@ -10,11 +10,11 @@ api.get('/list', (req, res) => {
     limit,
     skip,
   } = req.query;
-  Article.find({
+  Article.find(keywords ? {
     keywords: {
       $in: keywords,
     },
-  })
+  } : {})
     .skip(parseInt(skip, 10))
     .limit(parseInt(limit, 10))
     .exec().then(articles => {
